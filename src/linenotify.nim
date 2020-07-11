@@ -2,6 +2,8 @@ import cligen
 import httpClient
 import os
 import strformat
+import strutils
+import times
 
 const url = "https://notify-api.line.me/api/notify"
 const imageExtensions = [".png", ".jpg", ".jpeg"]
@@ -85,6 +87,13 @@ proc notify(message: string, imageThumbnail = "", imageFullsize = "",
 
   let response = client.request(url, httpMethod = HttpPost, multipart = data)
   echo response.body
+  echo &"Limit: {response.headers[\"X-RateLimit-Limit\"]}"
+  echo &"Remaining: {response.headers[\"X-RateLimit-Remaining\"]}"
+  echo &"ImageLimit: {response.headers[\"X-RateLimit-ImageLimit\"]}"
+  echo &"ImageRemaining: {response.headers[\"X-RateLimit-ImageRemaining\"]}"
+  let reset = response.headers["X-RateLimit-Reset"]
+  let utc = fromUnix(parseBiggestInt(reset)).utc
+  echo &"Reset: {utc}"
 
 when isMainModule:
   dispatch(notify,
