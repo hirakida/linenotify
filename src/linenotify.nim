@@ -95,7 +95,7 @@ proc notify(message: string, imageThumbnail = "", imageFullsize = "",
   let utc = fromUnix(parseBiggestInt(reset)).utc
   echo &"Reset: {utc}"
 
-when isMainModule:
+when isMainModule and not defined unitTest:
   dispatch(notify,
            short = {
            "imageThumbnail": 't',
